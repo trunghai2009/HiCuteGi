@@ -1,11 +1,11 @@
 import os
 import playsound
 import speech_recognition as sr
-import time, datetime
 import sys
 import ctypes
 import wikipedia
 import datetime
+
 import json
 import re
 import webbrowser
@@ -16,6 +16,8 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
 from time import strftime, sleep, time
+from time import strptime, time
+#from datetime import datetime
 from gtts import gTTS, tts
 from youtube_search import YoutubeSearch
 import webbrowser
@@ -436,7 +438,7 @@ def stop():
     # Để khi nó nghe không được lần N, nó sẽ tắt
     
 def get_text():
-        
+    
     for count in range(3):
         text = ear()
         if text:
@@ -610,15 +612,30 @@ class MainThread(QThread):
             sleep(6)
     
     def TaskExecution(self):
+        file = 'Ngay.txt'
+        now = datetime.datetime.now()
+        today = datetime.datetime.today()
+        # d0 = datetime.strftime(now, '%d/%m/%Y')
+        d0_obj = datetime.datetime.strftime(today, '%Y/%m/%d') #không có giờ phút giây
         
-        if 
-        
+        f = open(file, 'r')
+        a = f.read()
+        f.close()
+
+        f = open(file, 'w+')
+        f.write(d0_obj)
+        f.close()
+
+        a = datetime.datetime.strptime(a, "%Y/%m/%d")
+        d0 = datetime.datetime.strptime(d0_obj,'%Y/%m/%d') #có định dạng giờ phút giây
+        different = (d0 - a).days
+        if different >= 3:
+            print("Sao bạn đã ", different, "ngày không học vậy?")
+            print("Bạn cầm chăm học hơn nhé!")
+        text = get_text()
         sleep(2)
         while True:
                 
-            text = get_text()
-            now = datetime.datetime.now()
-            
             def cham_pa():
                 speakers("Bạn muốn học theo cách nào: flashcards, sơ đồ tư duy hay chơi trò chơi củng cố kiến thức")
                 sleep(5)
@@ -647,6 +664,7 @@ class MainThread(QThread):
                                 videourl = 'https://www.youtube.com/watch?v=X8bTB1Cszx4'
                             elif thu_tu_video == 2:
                                 videourl = 'https://www.youtube.com/watch?v=cQoIrEOicq0'
+                            webbrowser.open(videourl)
                             
                         else:
                             speakers("Tốt thôi, tôi sẽ mở wikipedia, bạn tự tra cứu tham khảo nhé")    
@@ -732,6 +750,7 @@ class MainThread(QThread):
                                 videourl = 'https://youtu.be/BLq8JVkSsEI'
                             elif thu_tu_video == 3:
                                 videourl = 'https://youtu.be/BF9RPtDkrcs'
+                            webbrowser.open(videourl)
                             
                         else:
                             speakers("Tốt thôi, tôi sẽ mở wikipedia, bạn tự tra cứu tham khảo nhé")    
@@ -1336,7 +1355,7 @@ class MainThread(QThread):
             elif ('kiểm tra' in text) or ('test' in text) or ('trắc nghiệm' in text):
                 self.test()
         
-            elif ('lịch sử' in text) or ('môn sử' in text) or ('học sử' in text) or ('ôn sử' in text):
+            elif ('lịch sử' in text) or ('môn sử' in text) or ('học sử' in text) or ('ôn sử' in text) or ('mục lục' in text):
                 lich_su()
 
             elif ('wiki' in text) or ('wikipedia' in text):
